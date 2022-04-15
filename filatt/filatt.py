@@ -91,12 +91,11 @@ class AttSet:
                 raise ValueError("Must be appropriate int not bool!")
             case _:
                 if attr in WinAtt._value2member_map_.keys():
-                    current = os.stat(self.filename).st_file_attributes
-                    if self.state:
-                        changed = WinAtt(attr).set_att(current, self.state)
-                    else:
-                        changed = WinAtt(attr).set_att(current)
-                    if current != changed:
+                    if (
+                        current := os.stat(self.filename).st_file_attributes
+                    ) != (
+                        changed := WinAtt(attr).set_att(current, self.state)
+                    ):
                         if not ctypes.windll.kernel32.SetFileAttributesW(
                             self.filename, changed
                         ):
